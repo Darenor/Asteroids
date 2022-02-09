@@ -58,7 +58,7 @@ using UnityEngine.UI;
         
             lives--;
             livesImage.text = "" + lives;
-            if (lives < 0)
+            if (lives < 1)
             {
                 GameOver();
             }else{
@@ -70,7 +70,7 @@ using UnityEngine.UI;
         
         private void Respawn()
         {
-            if (lives >= 0)
+            if (lives > 0)
             {
                 player.transform.position = Vector3.zero;
                 player.gameObject.layer = LayerMask.NameToLayer("Invicibility");
