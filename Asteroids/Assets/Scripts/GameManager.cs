@@ -19,7 +19,12 @@ using UnityEngine.UI;
         
         public Text scoreText;
         public Text livesImage;
+        public Text highScoreListText;
         public GameObject gameOverPanel;
+        public GameObject newHighScorePanel;
+        public InputField highScoreInput;
+        public GameManager gm;
+        
 
         public void Start()
         {
@@ -65,11 +70,15 @@ using UnityEngine.UI;
         
         private void Respawn()
         {
-            player.transform.position = Vector3.zero;
-            player.gameObject.layer = LayerMask.NameToLayer("Invicibility");
-            player.gameObject.SetActive(true);
+            if (lives >= 0)
+            {
+                player.transform.position = Vector3.zero;
+                player.gameObject.layer = LayerMask.NameToLayer("Invicibility");
+                player.gameObject.SetActive(true);
        
-            Invoke(nameof(TurnOnCollision), respawnInvulnerabilityTime);
+                Invoke(nameof(TurnOnCollision), respawnInvulnerabilityTime);
+            }
+            
         }
 
         private void TurnOnCollision()
@@ -79,15 +88,52 @@ using UnityEngine.UI;
 
         private void GameOver()
         {
-            lives = 3;
-            score = 0;
+                        
             Invoke(nameof(Respawn), respawnTime);
-            gameOverPanel.SetActive(true);
+            //Tell GameManager to check for high scores
+            if (gm.CheckForHightScore(score))
+            {
+                newHighScorePanel.SetActive(true);
+            }
+            else
+            {
+                gameOverPanel.SetActive(true);
+                highScoreListText.text = "High Score" + "\n" + "\n" + PlayerPrefs.GetString("highscoreName") + " " + PlayerPrefs.GetInt("highscore");
+            }
+            
         }
+
+        public void HighScoreInput()
+        {
+            string newInput = highScoreInput.text;
+            Debug.Log (newInput);
+            newHighScorePanel.SetActive(false);
+            gameOverPanel.SetActive(true);
+            PlayerPrefs.SetString("highscoreName", newInput);
+            PlayerPrefs.SetInt("highscore", score);
+            highScoreListText.text = "High Score" + "\n" + "\n" + PlayerPrefs.GetString("highscoreName") + " " + PlayerPrefs.GetInt("highscore");
+
+        }
+        
 
         public void Restart()
         {
             SceneManager.LoadScene("Game");
+        }
+
+        public void MainMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        public bool CheckForHightScore(int score)
+        {
+            int highScore = PlayerPrefs.GetInt("highscore");
+            if (score > highScore)
+            {
+                return true;
+            }
+            return false;
         }
 
     }

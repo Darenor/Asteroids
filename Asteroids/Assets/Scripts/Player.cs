@@ -8,10 +8,12 @@ public class Player : MonoBehaviour
     
     public float dashSpeed = 1.0f;
     public float turnSpeed = 1.0f;
+    public float backwards = -1.0f;
 
     private GameManager Dead;
     private Rigidbody2D _rigidbody;
     private bool _dash;
+    private bool _backwards;
     private float _turnDirection;
     public float screenTop;
     public float screenBottom;
@@ -30,6 +32,8 @@ public class Player : MonoBehaviour
     private void Update()
     {
         _dash = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+
+        _backwards = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
@@ -70,6 +74,11 @@ public class Player : MonoBehaviour
         if (_dash)
         {
             _rigidbody.AddForce(this.transform.up * this.dashSpeed);
+        }
+        
+        if (_backwards)
+        {
+            _rigidbody.AddForce(this.transform.up * this.backwards);
         }
 
         if (_turnDirection != 0.0f)
